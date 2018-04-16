@@ -53,4 +53,41 @@ def mapBT[A, B](f: A => B)(tree: BT[A]) : BT[B] =
 
 mapBT((v: Int) => 2 * v)(t: BT[Int]) == Node(2,Node(4,Empty,Node(6,Empty,Empty)),Empty)
 
-// zad 5. - todo
+// zad 5. 
+sealed trait Graphs[A]
+case class Graph[A](succ: A => List[A]) extends Graphs[A]
+
+def pathExists[A](g: Graph[A])(from: A, to: A) : Boolean = {
+
+  def search(visited: List[A]) (toVisit: List[A]): Boolean =
+    if (toVisit contains to)
+      true
+    else {
+      toVisit match {
+        case h :: t =>
+          if (visited contains h)
+            search(visited)(t)
+          else
+            search(h :: visited)(t ::: (g succ h))
+        case Nil => false
+      }
+    }
+
+  search(List())(g succ from)
+}
+
+val g = Graph((i: Int) =>
+  i match {
+    case 0 => List(3)
+    case 1 => List(0,2,4)
+    case 2 => List(1)
+    case 3 => Nil
+    case 4 => List(0,2)
+    case n => throw new NoSuchElementException("Graph g: node " + n + " doesn't exist")
+  })
+
+pathExists(g)(4, 1) == true
+pathExists(g)(0, 4) == false
+pathExists(g)(1, 2) == true
+pathExists(g)(3, 3) == false
+pathExists(g)(1, 1) == true
