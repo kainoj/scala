@@ -18,29 +18,32 @@ whileLoop(count < 4) {
 
 // zad. 2
 def lrepeat[A] (f: Int => Int)(stream: Stream[A]) : Stream[A] = {
-  def llrepeat[A](idx: Int) : Stream[A] =
+  def llrepeat[A](idx: Int)(stream: Stream[A]) : Stream[A] =
     stream match {
-      case p #:: xs => Stream.fill(f(idx))(p) #:::  llrepeat(idx+1)
+      case p #:: xs => Stream.fill(f(idx))(p) #:::  llrepeat(idx+1)(xs)
       case Stream.Empty => stream
     }
-  llrepeat(0)
+  llrepeat(0)(stream)
 }
 
 (lrepeat (i => i+1) (Stream.from(1)) take 15).toList == List(1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5)
-(lrepeat (i => i+1) (Stream("a", "b", "Cc"))).toList
+(lrepeat (i => i+1) (Stream("a", "b", "Cc"))).toList == List("a", "b", "b", "Cc", "Cc", "Cc")
+
+
+
+sealed trait lBT[+A]
+case object LEmpty extends lBT[Nothing]
+case class LNode[+A](elem: A, left: () => lBT[A], right: () => lBT[A]) extends lBT[A]
+
 
 // zad. 3a
 def lBreadth[A](ltree: lBT[A]) : Stream[A] = {
 
   def llBreadth[A](q: List[lBT[A]]) : Stream[A] = {
-    q match {
-      case LNode(elem, left, right)::t =>  {
-        var lft = if (left() != LEmpty) List(left()) else List()
-        var rgt = if (right() != LEmpty) List(right()) else List()
-        elem #:: llBreadth(t ++ lft ++ rgt)
-
-      }
-      case _ => Stream.Empty
+    q match  {
+      case LEmpty :: t => llBreadth(t)
+      case LNode(elem, left, right)::t => elem #:: llBreadth(t ++ List(left(), right()))
+      case Nil => Stream.Empty
     }
   }
   llBreadth(List(ltree))
