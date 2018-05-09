@@ -2,9 +2,9 @@
 
 class MyQueue[+A] private (val xs: List[A], val ys: List[A]) {
 
-  def isEmpty[A] : Boolean = xs.isEmpty
+  def this() = this(List(), List())
 
-  def empty: MyQueue[A] = new MyQueue(List(), List())
+  def isEmpty[A] : Boolean = xs.isEmpty
 
   def first() : A = xs.head
 
@@ -53,6 +53,8 @@ object Lista7 {
     
     // Queue
     var q = MyQueue(1, 2, 3)
+    var q2 = new MyQueue
+    var q3 = MyQueue.empty
 
     println(q.first()) // 1
     q = q.dequeue()
