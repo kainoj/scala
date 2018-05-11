@@ -66,13 +66,12 @@ object Lista9 {
     (a, b)
   }
 
-  def periodically(duration: Long, times: Int)(block: => Unit): Unit =
-    if (times > 0) {
-      val thr = new Thread(() => {
-        block
-        Thread.sleep(duration)
-        periodically(duration, times - 1)(block)
-      })
+  def periodically(duration: Long, times: Int)(block: => Unit): Unit = {
+      val thr = new Thread(() =>
+        for (i <- 0 to times) {
+          block
+          Thread.sleep(duration)
+        })
       thr.setDaemon(true)
       thr.start()
     }
