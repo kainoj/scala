@@ -1,3 +1,5 @@
+<a href="https://www.buymeacoffee.com/przemo" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+
 # Programming in Scala
 _University of Wroclaw, summer semester 2018_
 
